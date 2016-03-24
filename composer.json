@@ -1,5 +1,5 @@
 {
-	"name": "maximal1st/GetImages",
+	"name": "maximal1st/get-images",
 	"type": "library",
 	"description": "It's about traverse site pages and collect images",
 	"keywords": ["site","images","download"],
@@ -17,7 +17,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"maximalist\\get-images": "src"
+			"maximalist\\GetImages": "src"
 		}
 	}
 }
