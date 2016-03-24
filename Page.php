@@ -56,12 +56,12 @@ class Page {
 	}
 
 /**
- * Return collection of found pages
+ * Return collection of found page links
  *
- * @return array Pages collection
+ * @return array Links collection
  */
-	function getPages() {
-		return array_keys( self::$pages );
+	function getLinks() {
+		return array_keys( $this->links );
 	}
 
 /**
@@ -70,7 +70,7 @@ class Page {
  * @return array Images collection
  */
 	function getImages() {
-		return array_keys( self::$images );
+		return array_keys( $this->images );
 	}
 
 }

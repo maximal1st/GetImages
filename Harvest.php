@@ -16,14 +16,14 @@ class Harvest {
 
 	function make() {
 		$page = new Page( $this->url );
-		foreach( $page->getImages() as $image )
+		foreach( $page->getImages() as $url )
 		{
-			$image = new Image( $image );
+			$image = new Image( $url );
 			$image->load(); 
 		}
-		foreach( $page->getPages() as $page )
+		foreach( $page->getLinks() as $url )
 		{
-			$harvest = new Harvest( $page );
+			$harvest = new Harvest( $url );
 			$harvest->make();
 		}
 	}
