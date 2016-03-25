@@ -1,7 +1,7 @@
 {
 	"name": "maximal1st/get-images",
 	"type": "library",
-	"description": "It's about traverse site pages and collect images",
+	"description": "It's about traverse site pages and load images",
 	"keywords": ["site","images","download"],
 	"homepage": "https://github.com/maximal1st/GetImages",
 	"license": "MIT",
