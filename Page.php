@@ -38,6 +38,8 @@ class Page {
 
 /**
  * Collect links to other pages and images
+ *
+ * @todo Check image by mime type
  */
 	function parse() {
 		$html = file_get_contents( $this->url );

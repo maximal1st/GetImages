@@ -10,9 +10,6 @@
 
 namespace maximalist\GetImages;
 
-// require_once( 'Page.php' );
-// require_once( 'Image.php' );
-
 /**
  * It's about traverse site pages and load images
  *
