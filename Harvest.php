@@ -10,8 +10,8 @@
 
 namespace maximalist\GetImages;
 
-require_once( 'Page.php' );
-require_once( 'Image.php' );
+// require_once( 'Page.php' );
+// require_once( 'Image.php' );
 
 /**
  * It's about traverse site pages and load images
@@ -72,7 +72,6 @@ class Harvest {
 		foreach( $page->getLinks() as $url )
 			if( !array_key_exists( md5( $url ), self::$pages ) && !$this->isDeeper( $url ) )
 			{
-				echo $url."\n";
 				self::$pages[md5( $url )] = '';
 				$harvest = new Harvest( $url, $this->path, $this->depth );
 				try {
