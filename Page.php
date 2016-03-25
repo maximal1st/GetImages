@@ -33,7 +33,7 @@ class Page {
 		$this->url = $url;
 
 		$url = parse_url( $url );
-		$this->host = $url['host'];
+		$this->host = $url['scheme'].'://'.$url['host'];
 	}
 
 /**
@@ -75,7 +75,7 @@ class Page {
  */
 	private function absUrl( string $url ) {
 		$url = parse_url( $url );
-		return 'http://'.$this->host.(!empty( $url['path'] ) ? $url['path'] : '');
+		return $this->host.(!empty( $url['path'] ) ? $url['path'] : '');
 	}
 
 /**
