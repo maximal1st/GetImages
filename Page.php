@@ -70,9 +70,15 @@ class Page {
  * @param string $url Link URL
  * @return string Absolute link
  */
-	private function absUrl( string $url ) {
+	function absUrl( string $url ) {
 		$url = parse_url( $url );
-		return $this->host.(!empty( $url['path'] ) ? $url['path'] : '');
+		$s = '';
+		if( !empty( $url['scheme'] ) )
+			$s .= $url['scheme'].'://';
+		$s .= !empty( $url['host'] ) ? $url['host'] : $this->host;
+		if( !empty( $url['path'] ) )
+			$s .= $url['path'];
+		return $s;
 	}
 
 /**

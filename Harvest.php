@@ -25,7 +25,6 @@ namespace maximalist\GetImages;
  *
  * @method void make()
  * @method void reset()
- * @method bool isDeeper( string $url )
  * @method bool isSuitable( string $url )
  *
  * @todo Check image by mime type
@@ -53,6 +52,11 @@ class Harvest {
  * Traverse site to load images
  */
 	function make() {
+		if( $this->depth <= 0 )
+			return;
+		echo "URL\n".$this->url."\n";
+		self::$links[$this->url] = '';
+
 		$page = new Page( $this->url );
 		$page->parse();
 
@@ -72,10 +76,9 @@ class Harvest {
 			}
 
 		foreach( $page->getLinks() as $url )
-			if( $this->isSuitable( $url ) && !$this->isDeeper( $url ) && !array_key_exists( $url, self::$links ) )
+			if( $this->isSuitable( $url ) && !array_key_exists( $url, self::$links ) )
 			{
-				self::$links[$url] = '';
-				$harvest = new Harvest( $url, $this->path, $this->depth );
+				$harvest = new Harvest( $url, $this->path, $this->depth - 1 );
 				try {
 					$harvest->make();
 				} catch( \Exception $e ) {
@@ -93,17 +96,6 @@ class Harvest {
 		self::$links = [];
 		self::$images = [];
 		self::$errnum = 0;
-	}
-
-/**
- * Check link to exceed browsing level
- *
- * @param string $url Link URL
- * @return boolean True if link level exceed threshold
- */
-	private function isDeeper( $url ) {
-		$url = parse_url( $url );
-		return !empty( $url['path'] ) && count( explode( '/', $url['path'] ) ) > $this->depth;
 	}
 
 /**
