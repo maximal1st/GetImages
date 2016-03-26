@@ -4,6 +4,9 @@ namespace maximalist\GetImages\Test;
 
 use maximalist\GetImages\Image;
 
+/**
+ * @todo Use internal resources for testing purposes
+ */
 class ImageTest extends \PHPUnit_Framework_TestCase {
 
 	function testLoad() {
