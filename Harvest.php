@@ -19,7 +19,7 @@ namespace maximalist\GetImages;
  * @property string  $host   Site host
  * @property string  $path   Path to store downloaded images
  * @property integer $depth  How deep browse site
- * @property array   $pages  Collection of found pages
+ * @property array   $links  Collection of found pages
  * @property array   $images Collection of found images
  * @property integer $errnum Errors number
  *
@@ -36,8 +36,8 @@ class Harvest {
 	private $host;
 	private $path;
 	private $depth;
-	// Using static members is the simplest way to control over repeats
-	private static $pages = [];
+	// Using static members is the simplest way to control doubles
+	private static $links = [];
 	private static $images = [];
 	private static $errnum = 0;
 
@@ -72,9 +72,9 @@ class Harvest {
 			}
 
 		foreach( $page->getLinks() as $url )
-			if( $this->isSuitable( $url ) && !$this->isDeeper( $url ) && !array_key_exists( $url, self::$pages ) )
+			if( $this->isSuitable( $url ) && !$this->isDeeper( $url ) && !array_key_exists( $url, self::$links ) )
 			{
-				self::$pages[$url] = '';
+				self::$links[$url] = '';
 				$harvest = new Harvest( $url, $this->path, $this->depth );
 				try {
 					$harvest->make();
@@ -90,7 +90,7 @@ class Harvest {
  * Reset internal data. Use before start traverse in new site
  */
 	function reset() {
-		self::$pages = [];
+		self::$links = [];
 		self::$images = [];
 		self::$errnum = 0;
 	}
@@ -115,6 +115,24 @@ class Harvest {
 	private function isSuitable( $url ) {
 		$url = parse_url( $url );
 		return $this->host == $url['host'];
+	}
+
+/**
+ * Return collection of found page links
+ *
+ * @return array Links collection
+ */
+	function getLinks() {
+		return array_keys( self::$links );
+	}
+
+/**
+ * Return collection of found images
+ *
+ * @return array Images collection
+ */
+	function getImages() {
+		return array_keys( self::$images );
 	}
 
 }
