@@ -1,6 +1,8 @@
 <?php
 
-namespace maximalist\GetImages;
+namespace maximalist\GetImages\Test;
+
+use maximalist\GetImages\Page;
 
 class PageTest extends \PHPUnit_Framework_TestCase {
 	

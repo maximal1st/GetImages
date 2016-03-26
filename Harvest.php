@@ -25,6 +25,8 @@ namespace maximalist\GetImages;
  * @method void make()
  * @method void reset()
  * @method bool isDeeper( string $url )
+ *
+ * @todo Check image by mime type
  */
 class Harvest {
 
@@ -58,9 +60,11 @@ class Harvest {
 				self::$images[md5( $url )] = '';
 				$image = new Image( $url );
 				try {
-					$image->load();
-					$image->save( $this->path );
+					$image->getType();
+					if( preg_match( '/^image\/(gif|jpeg|png)/', $src ) )
+						$image->save( $this->path );
 				} catch( \Exception $e ) {
+					self::$errnum++;
 					if( self::$errnum > 100 )
 						throw new \Exception( "Too many errors" );
 				}
@@ -74,6 +78,7 @@ class Harvest {
 				try {
 					$harvest->make();
 				} catch( \Exception $e ) {
+					self::$errnum++;
 					if( self::$errnum > 100 )
 						throw new \Exception( "Too many errors" );
 				}

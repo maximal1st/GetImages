@@ -15,6 +15,10 @@ namespace maximalist\GetImages;
  *
  * @method void load()
  * @method void save( string $path )
+ * @method string getData()
+ * @method string getType()
+ *
+ * @uses   finfo to get image file type
  *
  * @throws Exception
  */
@@ -41,6 +45,7 @@ class Image {
 
 /**
  * Save image data to file
+ *
  * @param string $path Path to store image file
  */
 	function save( string $path ) {
@@ -50,6 +55,27 @@ class Image {
 			if( file_put_contents( $name, $this->data ) === false )
 				throw new \Exception( "Can't write ".$name );
 		}
+	}
+
+/**
+ * Get image data
+ *
+ * @return string Image data
+ */
+	function getData() {
+		return $this->data;
+	}
+
+/**
+ * Get mime type
+ *
+ * @return string Mime type
+ */
+	function getType() {
+		if( $this->data === null )
+			$this->load();
+		$finfo = new \finfo( FILEINFO_MIME );
+		return $finfo->buffer( $this->data );
 	}
 
 }

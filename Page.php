@@ -38,8 +38,6 @@ class Page {
 
 /**
  * Collect links to other pages and images
- *
- * @todo Check image by mime type
  */
 	function parse() {
 		$html = file_get_contents( $this->url );
@@ -55,15 +53,14 @@ class Page {
 		foreach( $links as $link )
 		{
 			$src = $this->absUrl( $link->getAttribute( 'src' ) );
-			if( preg_match( '/\.(jpg|png|gif)$/', $src ) )
-				$this->images[$src] = '';
+			$this->images[$src] = '';
 		}
 
 		$links = $dom->getElementsByTagName( 'a' );
 		foreach( $links as $link )
 		{
 			$href = $this->absUrl( $link->getAttribute( 'href' ) );
-			$this->pages[$href] = '';
+			$this->links[$href] = '';
 		}
 	}
 
