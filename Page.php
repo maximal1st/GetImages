@@ -11,7 +11,7 @@ namespace maximalist\GetImages;
  * @since 0.2
  *
  * @property string $url    Page URL
- * @property string $host   
+ * @property string $host   Page host
  * @property array  $links  Collection of found pages
  * @property array  $images Collection of found images
  *

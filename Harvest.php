@@ -16,6 +16,7 @@ namespace maximalist\GetImages;
  * @since 0.2
  *
  * @property string  $url    Site URL
+ * @property string  $host   Site host
  * @property string  $path   Path to store downloaded images
  * @property integer $depth  How deep browse site
  * @property array   $pages  Collection of found pages
@@ -25,12 +26,14 @@ namespace maximalist\GetImages;
  * @method void make()
  * @method void reset()
  * @method bool isDeeper( string $url )
+ * @method bool isSuitable( string $url )
  *
  * @todo Check image by mime type
  */
 class Harvest {
 
 	private $url;
+	private $host;
 	private $path;
 	private $depth;
 	// Using static members is the simplest way to control over repeats
@@ -42,6 +45,8 @@ class Harvest {
 		$this->url = $url;
 		$this->path = $path;
 		$this->depth = $depth;
+		$url = parse_url( $url );
+		$this->host = $url['host'];
 	}
 
 /**
@@ -52,9 +57,9 @@ class Harvest {
 		$page->parse();
 
 		foreach( $page->getImages() as $url )
-			if( !array_key_exists( md5( $url ), self::$images ) )
+			if( $this->isSuitable( $url ) && !array_key_exists( $url, self::$images ) )
 			{
-				self::$images[md5( $url )] = '';
+				self::$images[$url] = '';
 				$image = new Image( $url );
 				try {
 					if( preg_match( '/^image\/(gif|jpeg|png)/', $image->getType() ) )
@@ -67,9 +72,9 @@ class Harvest {
 			}
 
 		foreach( $page->getLinks() as $url )
-			if( !array_key_exists( md5( $url ), self::$pages ) && !$this->isDeeper( $url ) )
+			if( $this->isSuitable( $url ) && !$this->isDeeper( $url ) && !array_key_exists( $url, self::$pages ) )
 			{
-				self::$pages[md5( $url )] = '';
+				self::$pages[$url] = '';
 				$harvest = new Harvest( $url, $this->path, $this->depth );
 				try {
 					$harvest->make();
@@ -99,6 +104,17 @@ class Harvest {
 	private function isDeeper( $url ) {
 		$url = parse_url( $url );
 		return !empty( $url['path'] ) && count( explode( '/', $url['path'] ) ) > $this->depth;
+	}
+
+/**
+ * Check URL to have appropriate host
+ *
+ * @param string $url Link URL
+ * @return boolean True if URL have appropriate host
+ */
+	private function isSuitable( $url ) {
+		$url = parse_url( $url );
+		return $this->host == $url['host'];
 	}
 
 }
