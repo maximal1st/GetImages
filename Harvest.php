@@ -48,9 +48,6 @@ class Harvest {
  * Traverse site to load images
  */
 	function make() {
-		if( !is_dir( $this->path ) && !mkdir( $this->path, 0777, true ) )
-				throw new \Exception( "Can't create target directory ".$this->path );
-
 		$page = new Page( $this->url );
 		$page->parse();
 

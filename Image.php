@@ -11,12 +11,14 @@ namespace maximalist\GetImages;
  * @since 0.2
  *
  * @property string $url  Image URL
+ * @property string $name Image file name
  * @property string $data Image data
  *
  * @method void load()
  * @method void save( string $path )
  * @method string getData()
  * @method string getType()
+ * @method string getName()
  *
  * @uses   finfo to get image file type
  *
@@ -25,6 +27,7 @@ namespace maximalist\GetImages;
 class Image {
 
 	private $url;
+	private $name = null;
 	private $data = null;
 	
 /**
@@ -41,6 +44,7 @@ class Image {
 		$this->data = file_get_contents( $this->url );
 		if( $this->data === false )
 			throw new \Exception( "Can't load ".$this->url );
+		$this->name = basename( $this->url );
 	}
 
 /**
@@ -48,13 +52,16 @@ class Image {
  *
  * @param string $path Path to store image file
  */
-	function save( string $path ) {
-		if( $this->data )
-		{
-			$name = $path.'/'.basename( $this->url );
-			if( file_put_contents( $name, $this->data ) === false )
-				throw new \Exception( "Can't write ".$name );
-		}
+	function save( string $path = DIRECTORY_SEPARATOR.'tmp' ) {
+// 		if( is_file( $path ) )
+// 			throw new \Exception( "File with the target directory name '".$path."' exist" );
+		if( !is_dir( $path ) && !mkdir( $path, 0777, true ) )
+				throw new \Exception( "Can't create target directory ".$path );
+		if( $this->data === null )
+			$this->load();
+		$name = $path.DIRECTORY_SEPARATOR.$this->name;
+		if( file_put_contents( $name, $this->data ) === false )
+			throw new \Exception( "Can't write ".$name );
 	}
 
 /**
@@ -63,6 +70,8 @@ class Image {
  * @return string Image data
  */
 	function getData() {
+		if( $this->data === null )
+			$this->load();
 		return $this->data;
 	}
 
@@ -76,6 +85,15 @@ class Image {
 			$this->load();
 		$finfo = new \finfo( FILEINFO_MIME );
 		return $finfo->buffer( $this->data );
+	}
+
+/**
+ * Get file name
+ *
+ * @return string File name
+ */
+	function getName() {
+		return $this->name;
 	}
 
 }
