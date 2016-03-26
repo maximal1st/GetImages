@@ -3,7 +3,7 @@
  * Created especially for purpose of testing for PHP-developer position in hexa.com.ua
  *
  * @package maximalist\GetImages
- * @version 0.2
+ * @version 0.3
  * @author  Maxim Levchenko <maximl1st@gmail.com>
  * @example Usage.php
  */
@@ -23,13 +23,15 @@ namespace maximalist\GetImages;
  * @property array   $images Collection of found images
  * @property integer $errnum Errors number
  *
- * @method void make()
+ * @method void run()
  * @method void reset()
  * @method bool isSuitable( string $url )
  *
- * @todo Check image by mime type
+ * @todo Think about changing algorithm to not use static members
  */
-class Harvest {
+class Harvester {
+
+	const MAX_ERRORS = 100;
 
 	private $url;
 	private $host;
@@ -41,6 +43,11 @@ class Harvest {
 	private static $errnum = 0;
 
 	function __construct( string $url, string $path, int $depth = 1 ) {
+		if( filter_var( $url, FILTER_VALIDATE_URL ) === false )
+			throw new \Exception( "Invalid URL" );
+		if( filter_var( $depth, FILTER_VALIDATE_INT ) === false )
+			throw new \Exception( "Invalid depth" );
+
 		$this->url = $url;
 		$this->path = $path;
 		$this->depth = $depth;
@@ -51,7 +58,7 @@ class Harvest {
 /**
  * Traverse site to load images
  */
-	function make() {
+	function run() {
 		$page = new Page( $this->url );
 		$page->parse();
 
@@ -65,7 +72,7 @@ class Harvest {
 						$image->save( $this->path );
 				} catch( \Exception $e ) {
 					self::$errnum++;
-					if( self::$errnum > 100 )
+					if( self::$errnum > self::MAX_ERRORS )
 						throw new \Exception( "Too many errors" );
 				}
 			}
@@ -74,12 +81,12 @@ class Harvest {
 			if( $this->isSuitable( $url ) && $this->depth - 1 >= 0 && !array_key_exists( $url, self::$links ) )
 			{
 				self::$links[$this->url] = '';
-				$harvest = new Harvest( $url, $this->path, $this->depth - 1 );
+				$harvest = new Harvester( $url, $this->path, $this->depth - 1 );
 				try {
-					$harvest->make();
+					$harvest->run();
 				} catch( \Exception $e ) {
 					self::$errnum++;
-					if( self::$errnum > 100 )
+					if( self::$errnum > self::MAX_ERRORS )
 						throw new \Exception( "Too many errors" );
 				}
 			}

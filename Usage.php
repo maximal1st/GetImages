@@ -7,8 +7,8 @@ namespace maximalist\GetImages;
 
 require 'vendor/autoload.php';
 
-$h = new Harvest( 'http://umj.com.ua', __DIR__.'/img', 2 );
-$h->make();
+$h = new Harvester( 'http://umj.com.ua', __DIR__.'/img', 2 );
+$h->run();
 
 $p = new Page( 'https://raw.githubusercontent.com/maximal1st/GetImages/master/Test/test.html' );
 $p->parse();

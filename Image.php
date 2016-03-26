@@ -6,7 +6,7 @@
 namespace maximalist\GetImages;
 
 /**
- * Image manipulations
+ * Loads image data and save it to file system
  *
  * @since 0.2
  *
@@ -23,6 +23,8 @@ namespace maximalist\GetImages;
  * @uses   finfo to get image file type
  *
  * @throws Exception
+ *
+ * @todo Name cleanup and uniqueness check
  */
 class Image {
 
@@ -34,6 +36,9 @@ class Image {
  * @param string $url Image URL
  */
 	function __construct( string $url ) { 
+		if( filter_var( $url, FILTER_VALIDATE_URL ) === false )
+			throw new \Exception( "Invalid URL" );
+
 		$this->url = $url;
 	}
 
@@ -52,7 +57,7 @@ class Image {
  *
  * @param string $path Path to store image file
  */
-	function save( string $path = DIRECTORY_SEPARATOR.'tmp' ) {
+	function save( string $path ) {
 // 		if( is_file( $path ) )
 // 			throw new \Exception( "File with the target directory name '".$path."' exist" );
 		if( !is_dir( $path ) && !mkdir( $path, 0777, true ) )

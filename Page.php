@@ -6,7 +6,7 @@
 namespace maximalist\GetImages;
 
 /**
- * Page manipulations
+ * Downloads a HTML document and extracts hyperlinks and image URLs
  *
  * @since 0.2
  *
@@ -30,10 +30,15 @@ class Page {
 	private $images = [];
 	
 	function __construct( string $url ) { 
+		if( filter_var( $url, FILTER_VALIDATE_URL ) === false )
+			throw new \Exception( "Invalid URL" );
+
 		$this->url = $url;
 
 		$url = parse_url( $url );
 		$this->host = $url['scheme'].'://'.$url['host'];
+		if( !empty( $url['port'] ) )
+			$this->host .= ':'.$url['port'];
 	}
 
 /**
@@ -76,6 +81,8 @@ class Page {
 		if( !empty( $url['scheme'] ) )
 			$s .= $url['scheme'].'://';
 		$s .= !empty( $url['host'] ) ? $url['host'] : $this->host;
+		if( !empty( $url['port'] ) )
+			$s .= ':'.$url['port'];
 		if( !empty( $url['path'] ) )
 			$s .= $url['path'];
 		return $s;
