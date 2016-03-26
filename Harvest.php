@@ -60,8 +60,7 @@ class Harvest {
 				self::$images[md5( $url )] = '';
 				$image = new Image( $url );
 				try {
-					$image->getType();
-					if( preg_match( '/^image\/(gif|jpeg|png)/', $src ) )
+					if( preg_match( '/^image\/(gif|jpeg|png)/', $image->getType() ) )
 						$image->save( $this->path );
 				} catch( \Exception $e ) {
 					self::$errnum++;
