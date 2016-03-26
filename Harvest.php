@@ -52,11 +52,6 @@ class Harvest {
  * Traverse site to load images
  */
 	function make() {
-		if( $this->depth <= 0 )
-			return;
-		echo "URL\n".$this->url."\n";
-		self::$links[$this->url] = '';
-
 		$page = new Page( $this->url );
 		$page->parse();
 
@@ -76,8 +71,9 @@ class Harvest {
 			}
 
 		foreach( $page->getLinks() as $url )
-			if( $this->isSuitable( $url ) && !array_key_exists( $url, self::$links ) )
+			if( $this->isSuitable( $url ) && $this->depth - 1 >= 0 && !array_key_exists( $url, self::$links ) )
 			{
+				self::$links[$this->url] = '';
 				$harvest = new Harvest( $url, $this->path, $this->depth - 1 );
 				try {
 					$harvest->make();
@@ -104,7 +100,7 @@ class Harvest {
  * @param string $url Link URL
  * @return boolean True if URL have appropriate host
  */
-	private function isSuitable( $url ) {
+	function isSuitable( $url ) {
 		$url = parse_url( $url );
 		return $this->host == $url['host'];
 	}
